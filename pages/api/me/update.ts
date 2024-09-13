@@ -1,0 +1,14 @@
+import type { NextApiRequest, NextApiResponse } from "next";
+import { middleware } from "controllers/middleware";
+import methods from "micro-method-router";
+import { updateUserController } from "controllers/me/update";
+
+async function updateUser(req: NextApiRequest, res: NextApiResponse) {
+  await updateUserController(req, res);
+}
+
+const handleUpdate = methods({
+  patch: (req: NextApiRequest, res: NextApiResponse) => updateUser(req, res),
+});
+
+export default middleware(handleUpdate);
