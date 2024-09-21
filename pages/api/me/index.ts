@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { middleware } from "controllers/middleware";
+import { middleware, handlerCORS } from "controllers/middleware";
 import methods from "micro-method-router";
 
 function authMe(req: NextApiRequest, res: NextApiResponse) {
@@ -15,4 +15,6 @@ const handleOrder = methods({
   get: (req: NextApiRequest, res: NextApiResponse) => authMe(req, res),
 });
 
-export default middleware(handleOrder);
+const authMiddleware = middleware(handleOrder);
+
+export default handlerCORS(authMiddleware);

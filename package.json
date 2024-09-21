@@ -12,11 +12,11 @@
   "dependencies": {
     "airtable": "^0.12.2",
     "algoliasearch": "4.24.0",
-    "cors": "^2.8.5",
     "date-fns": "^3.6.0",
     "jsonwebtoken": "^9.0.2",
     "mercadopago": "^2.0.13",
     "next": "14.2.5",
+    "nextjs-cors": "^2.2.0",
     "nodemailer": "^6.9.14",
     "parse-bearer-token": "^1.0.1",
     "pg": "^8.12.0",

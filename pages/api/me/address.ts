@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { middleware } from "controllers/middleware";
+import { handlerCORS, middleware } from "controllers/middleware";
 
 import { updateItemController } from "controllers/me/address";
 import methods from "micro-method-router";
@@ -13,4 +13,6 @@ const handleUpdate = methods({
     updateItemUser(req, res),
 });
 
-export default middleware(handleUpdate);
+const updateMiddleware = middleware(handleUpdate);
+
+export default handlerCORS(updateMiddleware);

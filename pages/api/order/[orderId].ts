@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { middleware } from "controllers/middleware";
+import { handlerCORS, middleware } from "controllers/middleware";
 import methods from "micro-method-router";
 import { getOrderController } from "controllers/order/[orderId]";
 
@@ -11,4 +11,6 @@ const handleOrder = methods({
   get: (req: NextApiRequest, res: NextApiResponse) => getOrder(req, res),
 });
 
-export default middleware(handleOrder);
+const getOrderMiddleware = middleware(handleOrder);
+
+export default handlerCORS(getOrderMiddleware);
