@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { setLimitOffset } from "lib/setLimitOffset";
-import { dbAlgolia } from "connections/algolia";
+import { dbAllProducts } from "connections/algolia";
 
 export async function querySearchController(
   req: NextApiRequest,
@@ -11,7 +11,7 @@ export async function querySearchController(
   const q = req.query.q as string;
 
   try {
-    const resultados = await dbAlgolia.search(q, {
+    const resultados = await dbAllProducts.search(q, {
       // hitsPerPage <--     Es el número de elementos que muestra cada página.
       //page         <--   Obtiene la  página de resultados,empieza en 0
       hitsPerPage: limit,

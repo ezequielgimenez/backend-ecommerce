@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { createPreference } from "lib/mercadopago";
 import { createOrder } from "models/orders";
-import { dbAlgolia } from "connections/algolia";
+import { dbAllProducts } from "connections/algolia";
 import * as Yup from "yup";
 
 export async function createOrderController(
@@ -12,7 +12,7 @@ export async function createOrderController(
     const body = req.body;
     const { productId } = req.query as any;
     const data = (req as any).userData;
-    const product = await dbAlgolia.getObject(productId);
+    const product = await dbAllProducts.getObject(productId);
     const prods = JSON.parse(JSON.stringify(product));
     const myOrder = await createOrder(data.id, prods);
 
