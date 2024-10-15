@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { dbAllProducts } from "connections/algolia";
+import { dbProductsDest } from "connections/algolia";
 import * as Yup from "yup";
 
 export async function searchProduct(req: NextApiRequest, res: NextApiResponse) {
@@ -13,7 +13,7 @@ export async function searchProduct(req: NextApiRequest, res: NextApiResponse) {
     res.send({ success: false, message: error + "no es un string" });
   }
   try {
-    const product = await dbAllProducts.getObject(id);
+    const product = await dbProductsDest.getObject(id);
 
     res.send({
       success: true,
