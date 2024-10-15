@@ -16,8 +16,8 @@ export async function findOneUserById(id) {
   return data;
 }
 
-export async function actualizarDatosUser(dato, id) {
-  const user = await User.update(dato, {
+export async function actualizarDatosUser(datos, id) {
+  const user = await User.update(datos, {
     where: {
       id,
     },
