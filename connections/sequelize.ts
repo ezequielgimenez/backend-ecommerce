@@ -20,7 +20,7 @@ export const Order = sequelize.define("order", {
   product_id: DataTypes.STRING,
   title: DataTypes.STRING,
   img: DataTypes.STRING,
-  price: DataTypes.DECIMAL,
+  price: DataTypes.STRING,
   status: DataTypes.STRING,
   date: DataTypes.DATE,
 });
