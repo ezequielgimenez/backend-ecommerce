@@ -107,7 +107,7 @@ export async function createOrderController(
       //
       /////////////////ENVIOS/////////////// mode: 'custom'  'me2', // Opción para usar envíos de Mercado Envíos
       shipments: {
-        mode: "me2", // Activa Mercado Envíos.
+        mode: "default", // Activa Mercado Envíos.
         local_pickup: true, // Habilita la opción de retiro en tienda.
         free_methods: [
           {
