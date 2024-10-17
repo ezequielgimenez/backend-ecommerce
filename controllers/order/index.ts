@@ -142,7 +142,7 @@ export async function createOrderController(
   } catch (error) {
     res.send({
       success: false,
-      message: "No se encontro" + error,
+      message: error,
     });
   }
 }
