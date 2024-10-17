@@ -13,8 +13,8 @@ export async function createOrderController(
     const { productId } = req.query as any;
     const data = (req as any).userData;
     const product = await dbAllProducts.getObject(productId);
-    const prods = JSON.parse(JSON.stringify(product));
-    const myOrder = await createOrder(data.id, prods);
+    const itemProducto = JSON.parse(JSON.stringify(product));
+    const myOrder = await createOrder(data.id, itemProducto);
 
     const schemaUser = Yup.object().shape({
       name: Yup.string().required(), // Agrega las validaciones que correspondan
@@ -41,14 +41,17 @@ export async function createOrderController(
       ...body,
       items: [
         {
-          id: "1234",
-          title: "Dummy Title",
-          description: "Dummy description",
-          picture_url: "http://www.myapp.com/myimage.jpg",
-          category_id: "car_electronics",
+          id: itemProducto.objectID,
+          title: itemProducto.name,
+          description: itemProducto.description,
+          picture_url: itemProducto.image,
+          //"fashion" – Moda y ropa
+          // "home" – Hogar y muebles
+          // "electronics" – Electrónica en general
+          category_id: "fashion",
           quantity: 1,
-          currency_id: "BRL",
-          unit_price: 10,
+          currency_id: "ARS",
+          unit_price: itemProducto.precio,
         },
       ],
       marketplace_fee: 0,
@@ -103,28 +106,30 @@ export async function createOrderController(
       //   installments: 5,
       //   default_installments: 1,
       // },
-      /////////////////ENVIOS///////////////
-      // shipments: {
-      //   mode: "custom",
-      //   local_pickup: false,
-      //   default_shipping_method: null,
-      //   free_methods: [
-      //     {
-      //       id: 1,
-      //     },
-      //   ],
-      //   cost: 10,
-      //   free_shipping: false,
-      //   dimensions: "10x10x20,500",
-      //   receiver_address: {
-      //     zip_code: "06000000",
-      //     street_number: 123,
-      //     street_name: "Street",
-      //     floor: "12",
-      //     apartment: "120A",
-      //   },
-      // },
-      // statement_descriptor: "Test Store",
+      //
+      /////////////////ENVIOS/////////////// mode: 'custom'  'me2', // Opción para usar envíos de Mercado Envíos
+      shipments: {
+        mode: "me2", // Activa Mercado Envíos.
+        local_pickup: true, // Habilita la opción de retiro en tienda.
+        free_methods: [
+          {
+            id: 501, // ID de "retiro en sucursal" (o método gratuito configurado).
+          },
+        ],
+        cost: 20, // Costo del envío a domicilio.
+        free_shipping: false, // El envío es gratis solo para retiro en tienda.
+        dimensions: "10x10x20,500", // Dimensiones del paquete.
+        //
+        //direccion
+        receiver_address: {
+          zip_code: data.address.codigo_postal,
+          street_number: data.address.nro_calle,
+          street_name: data.address.calle,
+          floor: "",
+          apartment: "",
+        },
+      },
+      statement_descriptor: "Modakelar ropas y accesorios",
     });
 
     res.send({
