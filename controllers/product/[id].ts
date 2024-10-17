@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { dbProductsDest } from "connections/algolia";
+import { dbAllProducts, dbProductsDest } from "connections/algolia";
 import * as Yup from "yup";
 
 export async function searchProduct(req: NextApiRequest, res: NextApiResponse) {
@@ -8,22 +8,33 @@ export async function searchProduct(req: NextApiRequest, res: NextApiResponse) {
   const idProduct = Yup.string().required();
 
   try {
-    await idProduct.validate(id);
-  } catch (error) {
-    res.send({ success: false, message: error + "no es un string" });
-  }
-  try {
-    const product = await dbProductsDest.getObject(id);
+    // Intentamos buscar primero en dbAllProducts
+    let product = await dbAllProducts.getObject(id!);
 
     res.send({
       success: true,
-      message: "Producto encontrado",
+      message: "Producto encontrado en dbAllProducts",
       data: product,
     });
   } catch (error) {
-    res.send({
-      success: false,
-      message: error.message,
-    });
+    console.log(
+      "No se encontró en dbAllProducts, buscando en dbProductsDest..."
+    );
+
+    try {
+      // Si no se encuentra en dbAllProducts, buscamos en dbProductsDest
+      const product = await dbProductsDest.getObject(id!);
+      res.send({
+        success: true,
+        message: "Producto encontrado en dbProductsDest",
+        data: product,
+      });
+    } catch (secondError) {
+      // Si no se encuentra en ninguna base, devolvemos un error
+      res.status(404).send({
+        success: false,
+        message: "Producto no encontrado en ninguna base de datos.",
+      });
+    }
   }
 }
