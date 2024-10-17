@@ -9,7 +9,6 @@ export async function createOrderController(
   res: NextApiResponse
 ) {
   try {
-    const body = req.body;
     const { productId } = req.query as any;
     const data = (req as any).userData;
     const product = await dbAllProducts.getObject(productId);
@@ -38,7 +37,6 @@ export async function createOrderController(
     await schemaUser.validate(data);
 
     const preference = await createPreference({
-      ...body,
       items: [
         {
           id: itemProducto.objectID,
@@ -143,6 +141,7 @@ export async function createOrderController(
     res.send({
       success: false,
       message: error,
+      myData: "",
     });
   }
 }
