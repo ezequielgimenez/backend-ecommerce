@@ -6,7 +6,7 @@ export async function createOrder(id, prod) {
   const order = await Order.create({
     userId: id,
     title: prod.name,
-    price: prod.price,
+    price: prod.precio,
     img: prod.image,
     product_id: prod.objectID,
     status: "pending",
