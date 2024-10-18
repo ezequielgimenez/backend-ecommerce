@@ -171,7 +171,6 @@ export async function createOrdersController(
     res.send({
       success: false,
       message: error,
-      myData: "",
     });
   }
 }
