@@ -58,6 +58,16 @@ export async function createOrdersController(
 
     const itemProducto = JSON.parse(JSON.stringify(results));
 
+    // Crear las órdenes para cada producto
+    const myOrders = await Promise.all(
+      results.map((product) => createOrder(data.id, product))
+    );
+
+    // Creo un ID compuesto para referencia externa
+    const externalReference = myOrders
+      .map((order) => order.get("id"))
+      .join(",");
+
     // Construir el array de items para la preferencia
     const items = itemProducto.map((product) => ({
       id: product.objectID,
@@ -102,7 +112,7 @@ export async function createOrdersController(
       expires: false,
       auto_return: "all",
       binary_mode: true,
-      external_reference: 122323,
+      external_reference: externalReference,
       marketplace: "marketplace",
       notification_url:
         "https://payments-sand.vercel.app/api/notification_order", /// A que URL de nuestra API le va a notificar sobre el pago
@@ -158,9 +168,9 @@ export async function createOrdersController(
     });
     //
   } catch (error) {
-    res.send({
+    res.status(500).send({
       success: false,
-      message: error,
+      message: error instanceof Error ? error.message : "Error desconocido",
     });
   }
 }
