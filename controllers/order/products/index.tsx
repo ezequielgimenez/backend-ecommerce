@@ -23,7 +23,7 @@ const schemaUser = Yup.object().shape({
   }),
 });
 
-export async function createOrderController(
+export async function createOrdersController(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -40,28 +40,48 @@ export async function createOrderController(
   }
   //
   try {
-    const { productId } = req.query as any;
+    const { productIds } = req.body as { productIds: string[] }; // Recibe array de IDs
     const data = (req as any).userData;
-    const product = await dbAllProducts.getObject(productId);
-    const itemProducto = JSON.parse(JSON.stringify(product));
-    const myOrder = await createOrder(data.id, itemProducto);
+
+    // Validar que se haya enviado al menos un ID
+    if (!productIds || productIds.length === 0) {
+      return res
+        .status(400)
+        .json({ error: "Se requiere al menos un ID de producto." });
+    }
+
+    const { results } = await dbAllProducts.getObjects(productIds);
+
+    if (!results || results.length === 0) {
+      return res.status(404).json({ error: "No se encontraron productos." });
+    }
+
+    const itemProducto = JSON.parse(JSON.stringify(results));
+
+    // Crear las órdenes para cada producto
+    const myOrders = await Promise.all(
+      results.map((product) => createOrder(data.id, product))
+    );
+
+    // Creo un ID compuesto para referencia externa
+    const externalReference = myOrders
+      .map((order) => order.get("id"))
+      .join(",");
+
+    // Construir el array de items para la preferencia
+    const items = itemProducto.map((product) => ({
+      id: product.objectID,
+      title: product.name,
+      description: product.description,
+      picture_url: product.image,
+      category_id: "Fashion",
+      quantity: 1, // Asume que se comprará una unidad de cada producto
+      currency_id: "ARS",
+      unit_price: product.precio,
+    }));
 
     const preference = await createPreference({
-      items: [
-        {
-          id: itemProducto.objectID,
-          title: itemProducto.name,
-          description: itemProducto.description,
-          picture_url: itemProducto.image,
-          //"fashion" – Moda y ropa
-          // "home" – Hogar y muebles
-          // "electronics" – Electrónica en general
-          category_id: "fashion",
-          quantity: 1,
-          currency_id: "ARS",
-          unit_price: itemProducto.precio,
-        },
-      ],
+      items,
       marketplace_fee: 0,
       payer: {
         name: data.name,
@@ -92,7 +112,7 @@ export async function createOrderController(
       expires: false,
       auto_return: "all",
       binary_mode: true,
-      external_reference: myOrder.get("id"),
+      external_reference: externalReference,
       marketplace: "marketplace",
       notification_url:
         "https://payments-sand.vercel.app/api/notification_order", /// A que URL de nuestra API le va a notificar sobre el pago
