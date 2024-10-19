@@ -72,7 +72,10 @@ export async function createOrdersController(
         ? destProducts.value.results
         : []),
     ];
-
+    res.send({
+      message: "todo ok, se busco",
+      data: results,
+    });
     if (!results || results.length === 0) {
       return res.status(404).json({ error: "No se encontraron productos." });
     }
