@@ -51,13 +51,20 @@ export async function createOrdersController(
     }
 
     // Ejecutar ambas búsquedas en paralelo
-    const [allProducts, destProducts] = await Promise.all([
+    const [allProductos, destProducts] = await Promise.allSettled([
       dbAllProducts.getObjects(productIds),
       dbProductsDest.getObjects(productIds),
     ]);
 
-    // Combinar los resultados de ambas búsquedas
-    const results = [...allProducts.results, ...destProducts.results];
+    // Filtrar resultados exitosos
+    const results = [
+      ...(allProductos.status === "fulfilled"
+        ? allProductos.value.results
+        : []),
+      ...(destProducts.status === "fulfilled"
+        ? destProducts.value.results
+        : []),
+    ];
 
     if (!results || results.length === 0) {
       return res.status(404).json({ error: "No se encontraron productos." });
