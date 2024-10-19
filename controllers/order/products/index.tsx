@@ -85,7 +85,7 @@ export async function createOrdersController(
     // Construir el array de items para la preferencia
     const items = itemProducto.map((product) => ({
       id: product.objectID,
-      title: product.name,
+      title: "Zapatillas y zapatos",
       description: product.description,
       picture_url: product.image,
       category_id: "Fashion",
