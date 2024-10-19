@@ -62,6 +62,7 @@ export async function createOrdersController(
       dbAllProducts.getObjects(productIds),
       dbProductsDest.getObjects(productIds),
     ]);
+
     // Filtrar resultados exitosos y eliminar valores null
     const results = [
       ...(allProductos.status === "fulfilled"
@@ -72,10 +73,6 @@ export async function createOrdersController(
         : []),
     ].filter((product) => product !== null); // Filtrar nulls
 
-    res.send({
-      message: "todo ok, se busco",
-      data: results,
-    });
     if (!results || results.length === 0) {
       return res.status(404).json({ error: "No se encontraron productos." });
     }
