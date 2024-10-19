@@ -62,8 +62,7 @@ export async function createOrdersController(
       dbAllProducts.getObjects(productIds),
       dbProductsDest.getObjects(productIds),
     ]);
-
-    // Filtrar resultados exitosos
+    // Filtrar resultados exitosos y eliminar valores null
     const results = [
       ...(allProductos.status === "fulfilled"
         ? allProductos.value.results
@@ -71,7 +70,8 @@ export async function createOrdersController(
       ...(destProducts.status === "fulfilled"
         ? destProducts.value.results
         : []),
-    ];
+    ].filter((product) => product !== null); // Filtrar nulls
+
     res.send({
       message: "todo ok, se busco",
       data: results,
