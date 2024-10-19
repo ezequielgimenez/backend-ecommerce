@@ -29,6 +29,13 @@ export async function createOrdersController(
 ) {
   try {
     const data = (req as any).userData;
+    if (!data || !data.name || !data.surname || !data.email) {
+      return res.status(400).json({
+        success: false,
+        message: "Faltan datos del usuario.",
+      });
+    }
+
     //aca valido que en la data del user que tengo a traves del token, tenga todos estos campos para realizar una preferencia/compra
     await schemaUser.validate(data);
   } catch (error) {
