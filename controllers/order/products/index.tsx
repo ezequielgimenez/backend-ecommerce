@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { createPreference } from "lib/mercadopago";
 import { createOrder } from "models/orders";
-import { dbAllProducts } from "connections/algolia";
+import { dbAllProducts, dbProductsDest } from "connections/algolia";
 import * as Yup from "yup";
 
 const schemaUser = Yup.object().shape({
@@ -50,7 +50,10 @@ export async function createOrdersController(
         .json({ error: "Se requiere al menos un ID de producto." });
     }
 
-    const { results } = await dbAllProducts.getObjects(productIds);
+    const allProductos = await dbAllProducts.getObjects(productIds);
+    const destProducts = await dbProductsDest.getObjects(productIds);
+
+    const results = [...allProductos.results, ...destProducts.results];
 
     if (!results || results.length === 0) {
       return res.status(404).json({ error: "No se encontraron productos." });
