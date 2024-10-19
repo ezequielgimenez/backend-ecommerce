@@ -50,10 +50,14 @@ export async function createOrdersController(
         .json({ error: "Se requiere al menos un ID de producto." });
     }
 
-    const allProductos = await dbAllProducts.getObjects(productIds);
-    const destProducts = await dbProductsDest.getObjects(productIds);
+    // Ejecutar ambas búsquedas en paralelo
+    const [allProducts, destProducts] = await Promise.all([
+      dbAllProducts.getObjects(productIds),
+      dbProductsDest.getObjects(productIds),
+    ]);
 
-    const results = [...allProductos.results, ...destProducts.results];
+    // Combinar los resultados de ambas búsquedas
+    const results = [...allProducts.results, ...destProducts.results];
 
     if (!results || results.length === 0) {
       return res.status(404).json({ error: "No se encontraron productos." });
