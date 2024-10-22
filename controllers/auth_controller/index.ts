@@ -47,9 +47,11 @@ export async function authController(
       message: "Codigo enviado a su email",
     });
   } catch (error) {
+    const valor = process.env.MY_PASS;
     res.send({
       success: false,
       message: error,
+      valorEnv: valor,
     });
   }
 }
