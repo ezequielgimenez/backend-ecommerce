@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@getbrevo/brevo": "^2.2.0",
     "airtable": "^0.12.2",
     "algoliasearch": "4.24.0",
     "date-fns": "^3.6.0",
