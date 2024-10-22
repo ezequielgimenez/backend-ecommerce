@@ -10,7 +10,7 @@ import { findOrCreateUser } from "models/user";
 //libs
 import { generateCode } from "lib/generateCode";
 import { generateDateExpire } from "lib/generateExpires";
-import { sendEmailCode } from "lib/sendEmail";
+import { sendEmail, sendEmailCode } from "lib/sendEmail";
 import { verificarEmail } from "lib/verify-email";
 
 export async function authController(
@@ -40,7 +40,7 @@ export async function authController(
       const expire = generateDateExpire();
       const code = generateCode();
       await updateAuth(code, expire, userId);
-      await sendEmailCode(email, code);
+      await sendEmail(email, code);
     }
     res.send({
       success: true,
