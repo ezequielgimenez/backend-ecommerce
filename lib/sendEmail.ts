@@ -79,8 +79,8 @@ export async function sendEmailCode(email, code) {
 const transporter = nodemailer.createTransport({
   service: "gmail", // o el servicio que estés usando
   auth: {
-    user: "ezequielezequiel9@gmail.com",
-    pass: process.env.MY_PASS as string,
+    user: process.env.MY_EMAIL,
+    pass: process.env.MY_PASS,
   },
 });
 
