@@ -12,7 +12,8 @@ export async function sendEmailCode(email, code) {
   try {
     const stmpEmail = new brevo.SendSmtpEmail();
     stmpEmail.subject = "Hola usuario de Modakelar";
-    stmpEmail.to = email;
+    stmpEmail.to = [{ email: email, name: "Usuario de Modakelar" }];
+
     stmpEmail.htmlContent = `
       <html>
         <head>
