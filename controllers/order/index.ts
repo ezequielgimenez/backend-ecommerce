@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { createPreference } from "lib/mercadopago";
 import { createOrder } from "models/orders";
-import { dbAllProducts } from "connections/algolia";
+import { dbAllProducts, dbProductsDest } from "connections/algolia";
 import * as Yup from "yup";
 
 const schemaUser = Yup.object().shape({
@@ -42,7 +42,21 @@ export async function createOrderController(
   try {
     const { productId } = req.query as any;
     const data = (req as any).userData;
-    const product = await dbAllProducts.getObject(productId);
+    let product = await dbAllProducts.getObject(productId);
+
+    // Si no se encuentra, intenta obtenerlo de la segunda base de datos
+    if (!product) {
+      product = await dbProductsDest.getObject(productId);
+    }
+
+    // Verifica si se encontró algún producto
+    if (!product) {
+      // Aquí puedes manejar el caso en que no se encontró ningún producto
+      return res
+        .status(404)
+        .json({ success: false, message: "Producto no encontrado" });
+    }
+
     const itemProducto = JSON.parse(JSON.stringify(product));
     const myOrder = await createOrder(data.id, itemProducto);
 
