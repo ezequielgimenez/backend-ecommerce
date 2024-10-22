@@ -39,27 +39,50 @@ export async function createOrderController(
     });
   }
   //
+  const { productId } = req.query as any;
+  const data = (req as any).userData;
+  let product;
+
+  // Manejo seguro para buscar el producto
   try {
-    const { productId } = req.query as any;
-    const data = (req as any).userData;
-    let product = await dbAllProducts.getObject(productId);
+    product = await dbAllProducts.getObject(productId);
+  } catch (error) {
+    console.error(
+      "Error al obtener el producto de la primera base de datos:",
+      error
+    );
+    return res
+      .status(500)
+      .json({ success: false, message: "Error al buscar el producto" });
+  }
 
-    // Si no se encuentra, intenta obtenerlo de la segunda base de datos
-    if (!product) {
+  // Si no se encuentra, intenta obtenerlo de la segunda base de datos
+  if (!product) {
+    try {
       product = await dbProductsDest.getObject(productId);
-    }
-
-    // Verifica si se encontró algún producto
-    if (!product) {
-      // Aquí puedes manejar el caso en que no se encontró ningún producto
+    } catch (error) {
+      console.error(
+        "Error al obtener el producto de la segunda base de datos:",
+        error
+      );
       return res
-        .status(404)
-        .json({ success: false, message: "Producto no encontrado" });
+        .status(500)
+        .json({ success: false, message: "Error al buscar el producto" });
     }
+  }
 
-    const itemProducto = JSON.parse(JSON.stringify(product));
-    const myOrder = await createOrder(data.id, itemProducto);
+  // Verifica si se encontró algún producto
+  if (!product) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Producto no encontrado" });
+  }
 
+  // Si se encontró el producto, continúa con la creación de la orden
+  const itemProducto = JSON.parse(JSON.stringify(product));
+  const myOrder = await createOrder(data.id, itemProducto);
+
+  try {
     const preference = await createPreference({
       items: [
         {
