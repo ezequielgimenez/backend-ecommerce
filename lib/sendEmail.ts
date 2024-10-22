@@ -69,7 +69,8 @@ export async function sendEmailCode(email, code) {
     return {
       success: false,
       message:
-        "No se pudo enviar el correo. Por favor, inténtelo de nuevo más tarde.",
+        "No se pudo enviar el correo. Por favor, inténtelo de nuevo más tarde." +
+        error,
     };
   }
 }
