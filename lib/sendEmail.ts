@@ -66,7 +66,11 @@ export async function sendEmailCode(email, code) {
     };
     await apiInstance.sendTransacEmail(stmpEmail);
   } catch (error) {
-    console.log(error);
+    return {
+      success: false,
+      message:
+        "No se pudo enviar el correo. Por favor, inténtelo de nuevo más tarde.",
+    };
   }
 }
 
