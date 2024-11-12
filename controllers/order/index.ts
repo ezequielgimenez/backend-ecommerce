@@ -78,7 +78,7 @@ export async function createOrderController(
           category_id: "fashion",
           quantity: 1,
           currency_id: "ARS",
-          unit_price: itemProducto.precio,
+          unit_price: 100,
         },
       ],
       marketplace_fee: 0,
@@ -111,10 +111,10 @@ export async function createOrderController(
       expires: false,
       auto_return: "all",
       binary_mode: true,
-      external_reference: myOrder.get("id"),
+      external_reference: "abcd123456789",
       marketplace: "marketplace",
       notification_url:
-        "https://payments-sand.vercel.app/api/notification_order", /// A que URL de nuestra API le va a notificar sobre el pago
+        "https://webhook.site/11c4ed38-8546-4c17-b27e-c34e3ee9a974", /// A que URL de nuestra API le va a notificar sobre el pago
       operation_type: "regular_payment",
 
       ////////////////////// Metodos de pago //////////////////////
