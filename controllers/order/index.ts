@@ -114,9 +114,8 @@ export async function createOrderController(
       external_reference: "abcd123456789",
       marketplace: "marketplace",
       notification_url:
-        "https://webhook.site/11c4ed38-8546-4c17-b27e-c34e3ee9a974", /// A que URL de nuestra API le va a notificar sobre el pago
+        "https://webhook.site/971bae7a-f47c-4a30-8b8f-b9fa245f4bab", /// A que URL de nuestra API le va a notificar sobre el pago
       operation_type: "regular_payment",
-
       ////////////////////// Metodos de pago //////////////////////
       // payment_methods: {
       //   default_payment_method_id: "master",
